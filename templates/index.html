@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        input {
+            display: block;
+        }
+    </style>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js"></script>
+    <script type="application/javascript">
+        var socket;
+
+        function init() {
+            var chat = document.getElementById("chat");
+            socket = io.connect("http://127.0.0.1:5000");
+            socket.on("message", function (data) {
+                chat.value += (data["name"] + ":" + data["content"] + "\n");
+            })
+        }
+
+        function submit() {
+            var data = {}
+            token = document.getElementById("token");
+            content = document.getElementById("content");
+            data["token"] = token.value;
+            data["content"] = content.value;
+            socket.emit("message", data);
+        }
+
+        function join(){
+            var data = {};
+            token = document.getElementById("token");
+            data["token"] = token.value;
+            socket.emit("join", data);
+        }
+        function leave(){
+            var data = {};
+            token = document.getElementById("token");
+            data["token"] = token.value;
+            socket.emit("leave", data);
+        }
+    </script>
+</head>
+<body onload="init()">
+<textarea id="chat" readonly="readonly" style="width: 516px; height: 265px;"></textarea>
+<input name="token" id="token" autocomplete="off" placeholder="token">
+<input name="content" id="content" autocomplete="off" placeholder="内容">
+<input name="room" id="room" autocomplete="off" placeholder="房间">
+<input id="button-submit" type="submit" value="提交" onclick="submit()">
+<input id="button-join" type="submit" value="加入" onclick="join()">
+<input id="button-leave" type="submit" value="退出" onclick="leave()">
+<script type="application/javascript">
+
+</script>
+</body>
+</html>
